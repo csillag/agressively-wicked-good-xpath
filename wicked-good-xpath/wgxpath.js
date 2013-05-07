@@ -197,14 +197,15 @@ wgxpath.install = function(opt_win) {
   var doc = win.document;
 
   // Installation is a noop if native XPath is available.
-  if (!doc['evaluate']) {
-    win['XPathResult'] = wgxpath.XPathResult_;
-    doc['evaluate'] = function(expr, context, nsResolver, type, result) {
-      return new wgxpath.XPathExpression_(expr, nsResolver).
-          evaluate(context, type);
-    };
-    doc['createExpression'] = function(expr, nsResolver) {
-      return new wgxpath.XPathExpression_(expr, nsResolver);
-    };
+  if (doc['evaluate']) {
+    console.log("This browser already has an XPath implementation, but overriding it, as required.");
   }
+  win['XPathResult'] = wgxpath.XPathResult_;
+  doc['evaluate'] = function(expr, context, nsResolver, type, result) {
+    return new wgxpath.XPathExpression_(expr, nsResolver).
+        evaluate(context, type);
+  };
+  doc['createExpression'] = function(expr, nsResolver) {
+    return new wgxpath.XPathExpression_(expr, nsResolver);
+  };
 };
